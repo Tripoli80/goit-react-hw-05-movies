@@ -9,7 +9,6 @@ import {
   Description,
   SubmitBtn,
   AdditionalInfo,
-
 } from './FilmDetails.styled';
 
 const FilmDetails = () => {
@@ -21,20 +20,15 @@ const FilmDetails = () => {
     const data = await getFilmById(idSelectFilm);
     setDetailsInfo(data);
   };
-
-  useEffect(() => postGet, []);
+  useEffect(() => {
+    postGet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (!detailsInfo) {
     return <p>Not Find details</p>;
   }
-  const {
-   
-    poster_path,
-    popularity,
-    overview,
-    title,
-    name,
-    genres,
-  } = detailsInfo.data;
+  const { poster_path, popularity, overview, title, name, genres } =
+    detailsInfo.data;
   console.log('🚀 ~ data', detailsInfo.data);
 
   const goBack = () => {
@@ -45,11 +39,13 @@ const FilmDetails = () => {
     <>
       {<SubmitBtn onClick={goBack}>Go Back</SubmitBtn>}
       <Container>
-        <Poster src={
+        <Poster
+          src={
             poster_path
               ? `https://image.tmdb.org/t/p/w500/${poster_path}`
               : 'https://klpmotors.ru/tpl/palitra/images/nophoto.jpg'
-          }/>
+          }
+        />
         <Description>
           <h3>{title ? title : name}</h3>
           <p>
