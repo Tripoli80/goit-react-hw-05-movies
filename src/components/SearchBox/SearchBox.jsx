@@ -14,6 +14,7 @@ const SearchBox = props => {
     if (productName) {
       mountSearchBox(productName);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

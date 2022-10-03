@@ -12,7 +12,9 @@ const Reviews = () => {
     setReviews(data);
   };
 
-  useEffect(() => postGet, []);
+  useEffect(() => {postGet()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (!reviewsInfo) {
     return null;
   }
