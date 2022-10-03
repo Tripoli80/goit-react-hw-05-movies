@@ -7,14 +7,10 @@ const Reviews = () => {
   const [reviewsInfo, setReviews] = useState(0);
   const { idSelectFilm } = useParams();
 
-  const postGet = async () => {
-    const data = await getReviewsById(idSelectFilm);
-    setReviews(data);
-  };
-
-  useEffect(() => {postGet()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {
+    getReviewsById(idSelectFilm).then(setReviews);
+  }, [idSelectFilm]);
+  
   if (!reviewsInfo) {
     return null;
   }

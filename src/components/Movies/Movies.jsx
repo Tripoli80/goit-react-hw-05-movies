@@ -1,67 +1,81 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import { getMovisByQuery } from 'services/apiFilm';
 import { List } from './Movies.styled';
 import { getListFilm } from 'services/getListFilm';
 import Loader from 'components/Loader/Loader';
 import SearchBox from 'components/SearchBox/SearchBox';
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Movies = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const [query, setQuery] = useState();
+
   const [Movies, setMovies] = useState([]);
-  // const [page, setPage] = useState(1);
-  // const [totalPage, setTotalPage] = useState(0);
-  const [query, setQuery] = useState('');
+
   const [error, setError] = useState(false);
   const [isLoading, setIsloading] = useState(false);
   const noFaundMsg = <p>Not find Movies</p>;
   const errorMsg = <p>Somsing went wrong.... Try again later</p>;
+  const filmToSearch = searchParams.get('query') ?? '';
+
+  localStorage.setItem('query', filmToSearch);
+  useMemo(() => {
+    localStorage.setItem('query', filmToSearch);
+  }, [filmToSearch]);
+
+  const init = () => {
+    postGet(localStorage.getItem('query'));
+  };
+
+  useEffect(init, []);
+
+  useEffect(() => {
+    query && postGet(query);
+  }, [query]);
 
   const postGet = async query => {
     if (!query) {
       return;
     }
     setIsloading(true);
+    setMovies([]);
     const data = await getMovisByQuery(query);
     setIsloading(false);
     if (!data) {
       setError(true);
       return;
     }
-
     setMovies(data.data.results);
-    // setPage(data.data.page);
-    // setTotalPage(data.data.total_pages);
   };
 
   const heandleSubmit = e => {
     e.preventDefault();
-    if (e.target.name.value !== query) {
-      setMovies([]);
-      setQuery(e.target.name.value);
-    }
+    setQuery(filmToSearch);
   };
 
-  const mountSearchBox = query => {
-    setQuery(query);
+  const onChangeInput = e => {
+    setSearchParams(e.target.value !== '' ? { query: e.target.value } : {});
   };
 
-  useEffect(() => {
-    postGet(query);
-  }, [query]);
-
-  const resultSearchFilm = getListFilm(Movies);
+  const renderListFilms = useMemo(() => {
+    return getListFilm(Movies, '', location);
+  }, [Movies, location]);
 
   return (
     <>
       <SearchBox
         heandleSubmit={heandleSubmit}
-        mountSearchBox={mountSearchBox}
+        onChangeInput={onChangeInput}
+        value={filmToSearch}
       />
-
       {isLoading && <Loader />}
       {!Movies.length && !isLoading && noFaundMsg}
       {error && errorMsg}
-      {Movies.length !== 0 && <List>{resultSearchFilm}</List>}
+      {Movies.length !== 0 && <List>{renderListFilms}</List>}
     </>
   );
 };

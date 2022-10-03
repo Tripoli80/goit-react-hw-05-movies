@@ -7,15 +7,9 @@ import { Item, Portret } from './Cast.styled';
 const Cast = () => {
   const [castInfo, setCastInfo] = useState(0);
   const { idSelectFilm } = useParams();
-  const postGet = async () => {
-    const data = await getCastsById(idSelectFilm);
-    setCastInfo(data);
-  };
-
   useEffect(() => {
-    postGet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getCastsById(idSelectFilm).then(setCastInfo);
+  }, [idSelectFilm]);
   if (!castInfo) {
     return null;
   }

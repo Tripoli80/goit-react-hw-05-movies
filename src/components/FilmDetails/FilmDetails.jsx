@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getFilmById } from 'services/apiFilm';
 import { Link, Outlet } from 'react-router-dom';
 
@@ -14,16 +14,15 @@ import {
 const FilmDetails = () => {
   const [detailsInfo, setDetailsInfo] = useState(0);
   const { idSelectFilm } = useParams();
-
+  const location = useLocation();
   const navigate = useNavigate();
-  const postGet = async () => {
-    const data = await getFilmById(idSelectFilm);
-    setDetailsInfo(data);
-  };
+  // const postGet = async () => {
+  //   const data = await getFilmById(idSelectFilm);
+  //   setDetailsInfo(data);
+  // };
   useEffect(() => {
-    postGet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getFilmById(idSelectFilm).then(setDetailsInfo);
+  }, [idSelectFilm]);
   if (!detailsInfo) {
     return <p>Not Find details</p>;
   }
@@ -32,8 +31,14 @@ const FilmDetails = () => {
   console.log('🚀 ~ data', detailsInfo.data);
 
   const goBack = () => {
-    navigate(-1);
+    const backLink = location.state?.from ?? '/';
+    navigate(backLink);
   };
+
+  console.log(
+    '🚀 ~ file: FilmDetails.jsx ~ line 37 ~ FilmDetails ~ location',
+    location
+  );
 
   return (
     <>

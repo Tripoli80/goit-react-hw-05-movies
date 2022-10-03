@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getListFilm } from 'services/getListFilm';
 import Loader from 'components/Loader/Loader';
+import { useLocation } from 'react-router-dom';
 // const {getListFilm} = lazy(() => import('../services/getListFilm'));
 
 const { TrendsList } = require('./Home.styled');
@@ -11,31 +12,28 @@ const Home = () => {
   const [trends, setTrends] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsloading] = useState(false);
+  const location = useLocation();
+
 
   const errorMsg = <p>Somsing went wrong.... Try again later</p>;
-  const params = {
-    genres: 'all',
-    window: 'day',
-  };
- const postGet = async () => {
-      setIsloading(true);
-      const data = await getTrending(params);
-      if (!data) {
-        setError(true);
-        return;
-      }
-      setTrends(data);
-      setIsloading(false);
 
-      return data;
-    };
   useEffect(() => {
-   
-    postGet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const params = {
+      genres: 'all',
+      window: 'day',
+    };
+    setIsloading(true);
+    getTrending(params)
+      .then(e => {
+        setTrends(e);
+        setIsloading(false);
+      })
+      .catch(() => {
+        setError(true);
+      });
   }, []);
 
-  const items = getListFilm(trends, '/movies/');
+  const items = getListFilm(trends, '/movies/', location);
   return (
     <>
       {isLoading && <Loader />}

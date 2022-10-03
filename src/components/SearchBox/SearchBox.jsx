@@ -1,25 +1,13 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { FormSearch, InputQuery, SubmitBtn } from './SearchBox.styled';
 const SearchBox = props => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [query, setQury]= useState("")
 
-  const { heandleSubmit, mountSearchBox } = props;
+  const { heandleSubmit, value, onChangeInput } = props;
 
-  const productName = searchParams.get('query') ?? '';
-  const onChangeInput = e => {
-    setSearchParams({ query: e.target.value });
-  };
-  useEffect(() => {
-    if (productName) {
-      mountSearchBox(productName);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <>
       <FormSearch onSubmit={heandleSubmit}>
-        <InputQuery name="name" value={productName} onChange={onChangeInput} />
+        <InputQuery name="name" value={value} onChange={onChangeInput} />
         <SubmitBtn>Search</SubmitBtn>
       </FormSearch>
     </>
