@@ -10,11 +10,10 @@ const Reviews = () => {
   useEffect(() => {
     getReviewsById(idSelectFilm).then(setReviews);
   }, [idSelectFilm]);
-  
+
   if (!reviewsInfo) {
     return null;
   }
-  console.log(reviewsInfo);
   const allReviews = [...reviewsInfo.data.results];
   if (!allReviews) {
     return <p>Not find reviews</p>;

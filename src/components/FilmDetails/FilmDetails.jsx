@@ -15,12 +15,7 @@ const FilmDetails = () => {
   const [detailsInfo, setDetailsInfo] = useState(0);
   const { idSelectFilm } = useParams();
   const location = useLocation();
-  console.log('🚀 ~ location', location);
   const navigate = useNavigate();
-  // const postGet = async () => {
-  //   const data = await getFilmById(idSelectFilm);
-  //   setDetailsInfo(data);
-  // };
   useEffect(() => {
     getFilmById(idSelectFilm).then(setDetailsInfo);
   }, [idSelectFilm]);
@@ -29,11 +24,10 @@ const FilmDetails = () => {
   }
   const { poster_path, popularity, overview, title, name, genres } =
     detailsInfo.data;
-  console.log('🚀 ~ data', detailsInfo.data);
 
   const goBack = () => {
     const backLink = location.state?.from ?? '/';
-    console.log('🚀 backLink', backLink);
+
     navigate(backLink);
   };
 
