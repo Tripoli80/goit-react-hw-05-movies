@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {  useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { getMovisByQuery } from 'services/apiFilm';
@@ -9,12 +9,14 @@ import SearchBox from 'components/SearchBox/SearchBox';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
+
+
 const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const [query, setQuery] = useState();
+  // const [query, setQuery] = useState(() =>(searchParams.get('query') ?? ''));
 
-  const [Movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
 
   const [error, setError] = useState(false);
   const [isLoading, setIsloading] = useState(false);
@@ -22,20 +24,16 @@ const Movies = () => {
   const errorMsg = <p>Somsing went wrong.... Try again later</p>;
   const filmToSearch = searchParams.get('query') ?? '';
 
-  localStorage.setItem('query', filmToSearch);
-  useMemo(() => {
-    localStorage.setItem('query', filmToSearch);
-  }, [filmToSearch]);
 
-  const init = () => {
-    postGet(localStorage.getItem('query'));
-  };
 
-  useEffect(init, []);
+  // const fetchBusinesses = useCallback((filmToSearch) => {
+  //   filmToSearch && postGet(filmToSearch);
+  // }, [])
 
-  useEffect(() => {
-    query && postGet(query);
-  }, [query]);
+  // useEffect((fetchBusinesses=fetchBusinesses) => {
+  //   fetchBusinesses()
+  // }, [])
+
 
   const postGet = async query => {
     if (!query) {
@@ -51,10 +49,19 @@ const Movies = () => {
     }
     setMovies(data.data.results);
   };
+  
+  const fetchBusinesses = useCallback(() => {
+    postGet(filmToSearch)
+  }, [])
+
+  useEffect(() => {
+    fetchBusinesses()
+  }, [fetchBusinesses])
 
   const heandleSubmit = e => {
     e.preventDefault();
-    setQuery(filmToSearch);
+    filmToSearch && postGet(filmToSearch);
+
   };
 
   const onChangeInput = e => {
@@ -62,8 +69,8 @@ const Movies = () => {
   };
 
   const renderListFilms = useMemo(() => {
-    return getListFilm(Movies, '', location);
-  }, [Movies, location]);
+    return getListFilm(movies, '', location);
+  }, [movies, location]);
 
   return (
     <>
@@ -73,9 +80,9 @@ const Movies = () => {
         value={filmToSearch}
       />
       {isLoading && <Loader />}
-      {!Movies.length && !isLoading && noFaundMsg}
+      {!movies.length && !isLoading && noFaundMsg}
       {error && errorMsg}
-      {Movies.length !== 0 && <List>{renderListFilms}</List>}
+      {movies.length !== 0 && <List>{renderListFilms}</List>}
     </>
   );
 };
