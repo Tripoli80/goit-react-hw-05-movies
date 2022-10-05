@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
-  const [query, setQuery] = useState();
+  const [query, setQuery] = useState( searchParams.get('query') ?? '');
 
   const [Movies, setMovies] = useState([]);
 
@@ -22,16 +22,7 @@ const Movies = () => {
   const errorMsg = <p>Somsing went wrong.... Try again later</p>;
   const filmToSearch = searchParams.get('query') ?? '';
 
-  localStorage.setItem('query', filmToSearch);
-  useMemo(() => {
-    localStorage.setItem('query', filmToSearch);
-  }, [filmToSearch]);
 
-  const init = () => {
-    postGet(localStorage.getItem('query'));
-  };
-
-  useEffect(init, []);
 
   useEffect(() => {
     query && postGet(query);
