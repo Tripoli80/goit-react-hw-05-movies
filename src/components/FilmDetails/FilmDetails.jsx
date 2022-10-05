@@ -15,6 +15,7 @@ const FilmDetails = () => {
   const [detailsInfo, setDetailsInfo] = useState(0);
   const { idSelectFilm } = useParams();
   const location = useLocation();
+  console.log('🚀 ~ location', location);
   const navigate = useNavigate();
   // const postGet = async () => {
   //   const data = await getFilmById(idSelectFilm);
@@ -32,13 +33,9 @@ const FilmDetails = () => {
 
   const goBack = () => {
     const backLink = location.state?.from ?? '/';
+    console.log('🚀 backLink', backLink);
     navigate(backLink);
   };
-
-  console.log(
-    '🚀 ~ file: FilmDetails.jsx ~ line 37 ~ FilmDetails ~ location',
-    location
-  );
 
   return (
     <>
